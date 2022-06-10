@@ -67,7 +67,6 @@ def encrypt(file: str):
     password = typer.prompt('Enter a password (enter \'skip\' to generate random)')
     if password.lower() == 'skip':
         typer.echo('Generating random password...')
-        # TODO: implement password generator
         password = generatePassword()
         typer.echo(f'Generated: {password}')
     else:
@@ -79,14 +78,17 @@ def encrypt(file: str):
     # Generate Fernet from key
     fernet = Fernet(key)
     
-    # Encrypt Data
-    encrypted = fernet.encrypt(original)
+    try:
+        # Encrypt Data
+        encrypted = fernet.encrypt(original)
 
-    # Write encrypted data
-    # TODO: change file extension to something approperiate
-    with open (path, 'wb') as encrypted_file:
-        encrypted_file.write(encrypted)
-        encrypted_file.close()
+        # Write encrypted data
+        # TODO: change file extension to something approperiate
+        with open (path, 'wb') as encrypted_file:
+            encrypted_file.write(encrypted)
+            encrypted_file.close()
+    except:
+        typer.echo('Something went wrong...')
 
     typer.echo('File was encrypted successfully!')
 
@@ -111,16 +113,20 @@ def decrypt(file: str):
 
     # Generate Fernet from key
     fernet = Fernet(key)
-    
-    # Encrypt Data
-    decrypted = fernet.decrypt(encrypted)
+        
+    try:
+        # Encrypt Data
+        decrypted = fernet.decrypt(encrypted)
 
-    # Write decrypted data
-    with open(path, 'wb') as decrypted_file:
-        decrypted_file.write(decrypted)
-        decrypted_file.close()
+        # Write decrypted data
+        with open(path, 'wb') as decrypted_file:
+            decrypted_file.write(decrypted)
+            decrypted_file.close()
+    except:
+        typer.echo('Wrong password...')
+        return
 
-    typer.echo('File was dencrypted successfully!')
+    typer.echo('File was decrypted successfully!')
 
 
 if __name__ == "__main__":
