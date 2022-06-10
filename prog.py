@@ -1,3 +1,5 @@
+import random
+import string
 import typer
 import base64
 import hashlib
@@ -7,6 +9,28 @@ from cryptography.hazmat.primitives.kdf.scrypt import Scrypt
 
 
 app = typer.Typer()
+
+
+def generatePassword():
+    break_aparts = 3
+    separators = ['-', '_']
+    result = ''
+
+    for iteration in range(break_aparts):
+        length = random.randrange(4, 8)
+        separator = random.choice(separators)
+
+        for _ in range(length):
+            isLetters = bool(random.getrandbits(1))
+            if isLetters:
+                result += random.choice(string.ascii_letters)
+            else:
+                result += random.choice(string.digits)
+
+        if iteration < break_aparts-1:
+            result += separator
+
+    return result
 
 
 def deriveKey(user_password):
@@ -44,6 +68,8 @@ def encrypt(file: str):
     if password.lower() == 'skip':
         typer.echo('Generating random password...')
         # TODO: implement password generator
+        password = generatePassword()
+        typer.echo(f'Generated: {password}')
     else:
         typer.echo(f'You entered: {password}')
     
